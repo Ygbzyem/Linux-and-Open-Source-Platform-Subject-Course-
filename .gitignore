@@ -1,0 +1,29 @@
+# ===== Source tai ve (rat nang) =====
+**/kernel/
+**/uboot/
+**/rootfs/busybox-*/
+
+# ===== Rootfs that (device node, file cua root, binary) =====
+**/rootfs/initramfs/
+
+# ===== File nen / anh boot =====
+*.tar.gz
+*.tar.xz
+*.tar.bz2
+*.cpio.gz
+uInitrd
+**/output/
+
+# ===== Rac khi build kernel module =====
+*.o
+*.ko
+*.mod
+*.mod.c
+.*.cmd
+Module.symvers
+modules.order
+.tmp_versions/
+
+# ===== Rac editor =====
+*~
+*.swp
