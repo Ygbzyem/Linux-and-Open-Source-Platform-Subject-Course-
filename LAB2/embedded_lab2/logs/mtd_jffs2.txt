@@ -1,0 +1,115 @@
+Script started on 2026-10-05 14:48:06+07:00 [TERM="xterm-256color" TTY="/dev/pts/0" COLUMNS="113" LINES="36"]
+]666;vte.shell.postexec=0\]7;file://tung-pham/home/tung_pham/embedded_lab2\]0;tung_pham@tung-pham:~/embedded_lab2\]666;vte.shell.precmd!\]0;tung_pham@tung-pham: ~/embedded_lab2[01;32mtung_pham@tung-pham[00m:[01;34m~/embedded_lab2[00m$ sudo modprobe nandsim first_id_byte=0x20 second_id_byte=0x35
+]133;C\]666;vte.shell.preexec!\[sudo: authenticate] Password: **********************                      
+sudo: Authentication failed, try again.
+[sudo: authenticate] Password: *******************                   
+1 sudo: Authentication failed, try again.
+[sudo: authenticate] Password: *******************                   ******      
+]666;vte.shell.postexec=0\]7;file://tung-pham/home/tung_pham/embedded_lab2\]0;tung_pham@tung-pham:~/embedded_lab2\]666;vte.shell.precmd!\]0;tung_pham@tung-pham: ~/embedded_lab2[01;32mtung_pham@tung-pham[00m:[01;34m~/embedded_lab2[00m$ sudo modprobe nandsim first_id_byte=0x20 second_id_byte=0x35
+]133;C\]666;vte.shell.preexec!\sudo modprobe mtdblock
+sudo modprobe jffs2
+cat /proc/mtd]666;vte.shell.postexec=0\]7;file://tung-pham/home/tung_pham/embedded_lab2\]0;tung_pham@tung-pham:~/embedded_lab2\]666;vte.shell.precmd!\]0;tung_pham@tung-pham: ~/embedded_lab2[01;32mtung_pham@tung-pham[00m:[01;34m~/embedded_lab2[00m$ 
+]666;vte.shell.postexec=0\]7;file://tung-pham/home/tung_pham/embedded_lab2\]0;tung_pham@tung-pham:~/embedded_lab2\]666;vte.shell.precmd!\]0;tung_pham@tung-pham: ~/embedded_lab2[01;32mtung_pham@tung-pham[00m:[01;34m~/embedded_lab2[00m$ sudo modprobe nandsim first_id_byte=0x20 second_id_byte=0x35
+]133;C\]666;vte.shell.preexec!\]666;vte.shell.postexec=0\]7;file://tung-pham/home/tung_pham/embedded_lab2\]0;tung_pham@tung-pham:~/embedded_lab2\]666;vte.shell.precmd!\]0;tung_pham@tung-pham: ~/embedded_lab2[01;32mtung_pham@tung-pham[00m:[01;34m~/embedded_lab2[00m$ sudo modprobe mtdblock
+]133;C\]666;vte.shell.preexec!\]666;vte.shell.postexec=0\]7;file://tung-pham/home/tung_pham/embedded_lab2\]0;tung_pham@tung-pham:~/embedded_lab2\]666;vte.shell.precmd!\]0;tung_pham@tung-pham: ~/embedded_lab2[01;32mtung_pham@tung-pham[00m:[01;34m~/embedded_lab2[00m$ sudo modprobe jffs2
+]133;C\]666;vte.shell.preexec!\]666;vte.shell.postexec=0\]7;file://tung-pham/home/tung_pham/embedded_lab2\]0;tung_pham@tung-pham:~/embedded_lab2\]666;vte.shell.precmd!\]0;tung_pham@tung-pham: ~/embedded_lab2[01;32mtung_pham@tung-pham[00m:[01;34m~/embedded_lab2[00m$ cat /proc/mtd
+]133;C\]666;vte.shell.preexec!\dev:    size   erasesize  name
+mtd0: 02000000 00001000 "BIOS"
+mtd1: 02000000 00004000 "NAND simulator partition 0"
+]666;vte.shell.postexec=0\]7;file://tung-pham/home/tung_pham/embedded_lab2\]0;tung_pham@tung-pham:~/embedded_lab2\]666;vte.shell.precmd!\]0;tung_pham@tung-pham: ~/embedded_lab2[01;32mtung_pham@tung-pham[00m:[01;34m~/embedded_lab2[00m$ MTD=$(grep 'NAND simulator' /proc/mtd | head -1 | cut -d: -f1)
+]133;C\]666;vte.shell.preexec!\]666;vte.shell.postexec=0\]7;file://tung-pham/home/tung_pham/embedded_lab2\]0;tung_pham@tung-pham:~/embedded_lab2\]666;vte.shell.precmd!\]0;tung_pham@tung-pham: ~/embedded_lab2[01;32mtung_pham@tung-pham[00m:[01;34m~/embedded_lab2[00m$ N=${MTD#mtd}
+]133;C\]666;vte.shell.preexec!\]666;vte.shell.postexec=0\]7;file://tung-pham/home/tung_pham/embedded_lab2\]0;tung_pham@tung-pham:~/embedded_lab2\]666;vte.shell.precmd!\]0;tung_pham@tung-pham: ~/embedded_lab2[01;32mtung_pham@tung-pham[00m:[01;34m~/embedded_lab2[00m$ echo "NAND gia lap = /dev/$MTD , block = /dev/mtdblock$N"
+]133;C\]666;vte.shell.preexec!\NAND gia lap = /dev/mtd1 , block = /dev/mtdblock1
+]666;vte.shell.postexec=0\]7;file://tung-pham/home/tung_pham/embedded_lab2\]0;tung_pham@tung-pham:~/embedded_lab2\]666;vte.shell.precmd!\]0;tung_pham@tung-pham: ~/embedded_lab2[01;32mtung_pham@tung-pham[00m:[01;34m~/embedded_lab2[00m$ sudo mtdinfo /dev/$MTD
+]133;C\]666;vte.shell.preexec!\mtd1
+Name:                           NAND simulator partition 0
+Type:                           nand
+Eraseblock size:                16384 bytes, 16.0 KiB
+Amount of eraseblocks:          2048 (33554432 bytes, 32.0 MiB)
+Minimum input/output unit size: 512 bytes
+Sub-page size:                  256 bytes
+OOB size:                       16 bytes
+Character device major/minor:   90:2
+Bad blocks are allowed:         true
+Device is writable:             true
+
+]666;vte.shell.postexec=0\]7;file://tung-pham/home/tung_pham/embedded_lab2\]0;tung_pham@tung-pham:~/embedded_lab2\]666;vte.shell.precmd!\]0;tung_pham@tung-pham: ~/embedded_lab2[01;32mtung_pham@tung-pham[00m:[01;34m~/embedded_lab2[00m$ sudo flash_erase /dev/$MTD 0 0
+]133;C\]666;vte.shell.preexec!\Erasing 32768 Kibyte @ 0 --  0 % complete Erasing 32768 Kibyte @ 0 -- 100 % complete 
+]666;vte.shell.postexec=0\]7;file://tung-pham/home/tung_pham/embedded_lab2\]0;tung_pham@tung-pham:~/embedded_lab2\]666;vte.shell.precmd!\]0;tung_pham@tung-pham: ~/embedded_lab2[01;32mtung_pham@tung-pham[00m:[01;34m~/embedded_lab2[00m$ rm -rf /tmp/jffs2_data
+]133;C\]666;vte.shell.preexec!\]666;vte.shell.postexec=0\]7;file://tung-pham/home/tung_pham/embedded_lab2\]0;tung_pham@tung-pham:~/embedded_lab2\]666;vte.shell.precmd!\]0;tung_pham@tung-pham: ~/embedded_lab2[01;32mtung_pham@tung-pham[00m:[01;34m~/embedded_lab2[00m$ mkdir -p /tmp/jffs2_data/logs
+]133;C\]666;vte.shell.preexec!\]666;vte.shell.postexec=0\]7;file://tung-pham/home/tung_pham/embedded_lab2\]0;tung_pham@tung-pham:~/embedded_lab2\]666;vte.shell.precmd!\]0;tung_pham@tung-pham: ~/embedded_lab2[01;32mtung_pham@tung-pham[00m:[01;34m~/embedded_lab2[00m$ echo 'Hello from JFFS2!'    > /tmp/jffs2_data/hello.txt
+]133;C\]666;vte.shell.preexec!\]666;vte.shell.postexec=0\]7;file://tung-pham/home/tung_pham/embedded_lab2\]0;tung_pham@tung-pham:~/embedded_lab2\]666;vte.shell.precmd!\]0;tung_pham@tung-pham: ~/embedded_lab2[01;32mtung_pham@tung-pham[00m:[01;34m~/embedded_lab2[00m$ echo 'Embedded Linux Lab2'  > /tmp/jffs2_data/info.txt
+]133;C\]666;vte.shell.preexec!\]666;vte.shell.postexec=0\]7;file://tung-pham/home/tung_pham/embedded_lab2\]0;tung_pham@tung-pham:~/embedded_lab2\]666;vte.shell.precmd!\]0;tung_pham@tung-pham: ~/embedded_lab2[01;32mtung_pham@tung-pham[00m:[01;34m~/embedded_lab2[00m$ date                        > /tmp/jffs2_data/logs/boot.log
+]133;C\]666;vte.shell.preexec!\]666;vte.shell.postexec=0\]7;file://tung-pham/home/tung_pham/embedded_lab2\]0;tung_pham@tung-pham:~/embedded_lab2\]666;vte.shell.precmd!\]0;tung_pham@tung-pham: ~/embedded_lab2[01;32mtung_pham@tung-pham[00m:[01;34m~/embedded_lab2[00m$ sudo mkfs.jffs2 --root=/tmp/jffs2_data --eraseblock=0x4000 --output=/tmp/rootfs.jffs2 --pad --no-cleanmarkers
+]133;C\]666;vte.shell.preexec!\ls -lh /tmp/rootfs.jffs2]666;vte.shell.postexec=0\]7;file://tung-pham/home/tung_pham/embedded_lab2\]0;tung_pham@tung-pham:~/embedded_lab2\]666;vte.shell.precmd!\]0;tung_pham@tung-pham: ~/embedded_lab2[01;32mtung_pham@tung-pham[00m:[01;34m~/embedded_lab2[00m$ \\\\\\\[K[K[K[K[K[K[K
+]666;vte.shell.postexec=0\]7;file://tung-pham/home/tung_pham/embedded_lab2\]0;tung_pham@tung-pham:~/embedded_lab2\]666;vte.shell.precmd!\]0;tung_pham@tung-pham: ~/embedded_lab2[01;32mtung_pham@tung-pham[00m:[01;34m~/embedded_lab2[00m$ udo mkfs.jffs2 --root=/tmp/jffs2_data --eraseblock=0x4000 --output=/tmp/rootfs.jffs2 --pad --no-cleanmarkers
+]133;C\]666;vte.shell.preexec!\Command 'udo' not found, but can be installed with:
+sudo apt install udo
+]666;vte.shell.postexec=127\]7;file://tung-pham/home/tung_pham/embedded_lab2\]0;tung_pham@tung-pham:~/embedded_lab2\]666;vte.shell.precmd!\]0;tung_pham@tung-pham: ~/embedded_lab2[01;32mtung_pham@tung-pham[00m:[01;34m~/embedded_lab2[00m$ ls -lh /tmp/rootfs.jffs2
+]133;C\]666;vte.shell.preexec!\-rw-r--r-- 1 root root 16K Oct  5 14:49 /tmp/rootfs.jffs2
+]666;vte.shell.postexec=0\]7;file://tung-pham/home/tung_pham/embedded_lab2\]0;tung_pham@tung-pham:~/embedded_lab2\]666;vte.shell.precmd!\]0;tung_pham@tung-pham: ~/embedded_lab2[01;32mtung_pham@tung-pham[00m:[01;34m~/embedded_lab2[00m$ sudo nandwrite -p /dev/$MTD /tmp/rootfs.jffs2
+]133;C\]666;vte.shell.preexec!\Writing data to block 0 at offset 0x0
+Written 30 blocks containing only 0xff bytes
+Those block may be incorrectly treated as empty!
+]666;vte.shell.postexec=0\]7;file://tung-pham/home/tung_pham/embedded_lab2\]0;tung_pham@tung-pham:~/embedded_lab2\]666;vte.shell.precmd!\]0;tung_pham@tung-pham: ~/embedded_lab2[01;32mtung_pham@tung-pham[00m:[01;34m~/embedded_lab2[00m$ sudo mkdir -p /mnt/jffs2
+]133;C\]666;vte.shell.preexec!\]666;vte.shell.postexec=0\]7;file://tung-pham/home/tung_pham/embedded_lab2\]0;tung_pham@tung-pham:~/embedded_lab2\]666;vte.shell.precmd!\]0;tung_pham@tung-pham: ~/embedded_lab2[01;32mtung_pham@tung-pham[00m:[01;34m~/embedded_lab2[00m$ sudo mount -t jffs2 /dev/mtdblock$N /mnt/jffs2
+]133;C\]666;vte.shell.preexec!\]666;vte.shell.postexec=0\]7;file://tung-pham/home/tung_pham/embedded_lab2\]0;tung_pham@tung-pham:~/embedded_lab2\]666;vte.shell.precmd!\]0;tung_pham@tung-pham: ~/embedded_lab2[01;32mtung_pham@tung-pham[00m:[01;34m~/embedded_lab2[00m$ ls -la /mnt/jffs2/
+]133;C\]666;vte.shell.preexec!\total 4
+drwxr-xr-x 4 root      root         0 Jan  1  1970 [0m[01;34m.[0m
+drwxr-xr-x 3 root      root      4096 Sep 23 15:10 [01;34m..[0m
+-rw-rw-r-- 1 tung_pham tung_pham   18 Oct  5 14:49 hello.txt
+-rw-rw-r-- 1 tung_pham tung_pham   20 Oct  5 14:49 info.txt
+drwxrwxr-x 2 tung_pham tung_pham    0 Oct  5 14:49 [01;34mlogs[0m
+]666;vte.shell.postexec=0\]7;file://tung-pham/home/tung_pham/embedded_lab2\]0;tung_pham@tung-pham:~/embedded_lab2\]666;vte.shell.precmd!\]0;tung_pham@tung-pham: ~/embedded_lab2[01;32mtung_pham@tung-pham[00m:[01;34m~/embedded_lab2[00m$ at /mnt/jffs2/hello.txt /mnt/jffs2/info.txt /mnt/jffs2/logs/boot.log
+]133;C\]666;vte.shell.preexec!\Command 'at' not found, but can be installed with:
+sudo apt install at
+]666;vte.shell.postexec=127\]7;file://tung-pham/home/tung_pham/embedded_lab2\]0;tung_pham@tung-pham:~/embedded_lab2\]666;vte.shell.precmd!\]0;tung_pham@tung-pham: ~/embedded_lab2[01;32mtung_pham@tung-pham[00m:[01;34m~/embedded_lab2[00m$ C.5. Ghi thêm dữ liệu và kiểm tra persistence
+]133;C\]666;vte.shell.preexec!\C.5.: command not found
+]666;vte.shell.postexec=127\]7;file://tung-pham/home/tung_pham/embedded_lab2\]0;tung_pham@tung-pham:~/embedded_lab2\]666;vte.shell.precmd!\]0;tung_pham@tung-pham: ~/embedded_lab2[01;32mtung_pham@tung-pham[00m:[01;34m~/embedded_lab2[00m$ sudo sh -c 'echo "Written at $(date)" >> /mnt/jffs2/logs/boot.log'
+]133;C\]666;vte.shell.preexec!\]666;vte.shell.postexec=0\]7;file://tung-pham/home/tung_pham/embedded_lab2\]0;tung_pham@tung-pham:~/embedded_lab2\]666;vte.shell.precmd!\]0;tung_pham@tung-pham: ~/embedded_lab2[01;32mtung_pham@tung-pham[00m:[01;34m~/embedded_lab2[00m$ sudo sh -c 'echo "New runtime file" > /mnt/jffs2/runtime.txt'
+]133;C\]666;vte.shell.preexec!\]666;vte.shell.postexec=0\]7;file://tung-pham/home/tung_pham/embedded_lab2\]0;tung_pham@tung-pham:~/embedded_lab2\]666;vte.shell.precmd!\]0;tung_pham@tung-pham: ~/embedded_lab2[01;32mtung_pham@tung-pham[00m:[01;34m~/embedded_lab2[00m$ cat /mnt/jffs2/logs/boot.log
+]133;C\]666;vte.shell.preexec!\Mon Oct  5 02:49:33 PM +07 2026
+Written at Mon Oct  5 02:50:41 PM +07 2026
+]666;vte.shell.postexec=0\]7;file://tung-pham/home/tung_pham/embedded_lab2\]0;tung_pham@tung-pham:~/embedded_lab2\]666;vte.shell.precmd!\]0;tung_pham@tung-pham: ~/embedded_lab2[01;32mtung_pham@tung-pham[00m:[01;34m~/embedded_lab2[00m$ sudo umount /mnt/jffs2
+]133;C\]666;vte.shell.preexec!\]666;vte.shell.postexec=0\]7;file://tung-pham/home/tung_pham/embedded_lab2\]0;tung_pham@tung-pham:~/embedded_lab2\]666;vte.shell.precmd!\]0;tung_pham@tung-pham: ~/embedded_lab2[01;32mtung_pham@tung-pham[00m:[01;34m~/embedded_lab2[00m$ sudo mount -t jffs2 /dev/mtdblock$N /mnt/jffs2
+]133;C\]666;vte.shell.preexec!\]666;vte.shell.postexec=0\]7;file://tung-pham/home/tung_pham/embedded_lab2\]0;tung_pham@tung-pham:~/embedded_lab2\]666;vte.shell.precmd!\]0;tung_pham@tung-pham: ~/embedded_lab2[01;32mtung_pham@tung-pham[00m:[01;34m~/embedded_lab2[00m$ cat /mnt/jffs2/logs/boot.log
+]133;C\]666;vte.shell.preexec!\Mon Oct  5 02:49:33 PM +07 2026
+Written at Mon Oct  5 02:50:41 PM +07 2026
+]666;vte.shell.postexec=0\]7;file://tung-pham/home/tung_pham/embedded_lab2\]0;tung_pham@tung-pham:~/embedded_lab2\]666;vte.shell.precmd!\]0;tung_pham@tung-pham: ~/embedded_lab2[01;32mtung_pham@tung-pham[00m:[01;34m~/embedded_lab2[00m$ cat /mnt/jffs2/runtime.txt
+]133;C\]666;vte.shell.preexec!\New runtime file
+]666;vte.shell.postexec=0\]7;file://tung-pham/home/tung_pham/embedded_lab2\]0;tung_pham@tung-pham:~/embedded_lab2\]666;vte.shell.precmd!\]0;tung_pham@tung-pham: ~/embedded_lab2[01;32mtung_pham@tung-pham[00m:[01;34m~/embedded_lab2[00m$ sudo umount /mnt/jffs2
+]133;C\]666;vte.shell.preexec!\]666;vte.shell.postexec=0\]7;file://tung-pham/home/tung_pham/embedded_lab2\]0;tung_pham@tung-pham:~/embedded_lab2\]666;vte.shell.precmd!\]0;tung_pham@tung-pham: ~/embedded_lab2[01;32mtung_pham@tung-pham[00m:[01;34m~/embedded_lab2[00m$ sudo nanddump -o -l 512 -f /tmp/dump.bin /dev/$MTD
+]133;C\]666;vte.shell.preexec!\ECC failed: 0
+ECC corrected: 0
+Number of bad blocks: 0
+Number of bbt blocks: 0
+Block size 16384, page size 512, OOB size 16
+Dumping data starting at 0x00000000 and ending at 0x00000200...
+]666;vte.shell.postexec=0\]7;file://tung-pham/home/tung_pham/embedded_lab2\]0;tung_pham@tung-pham:~/embedded_lab2\]666;vte.shell.precmd!\]0;tung_pham@tung-pham: ~/embedded_lab2[01;32mtung_pham@tung-pham[00m:[01;34m~/embedded_lab2[00m$ hexdump -C /tmp/dump.bin | head -20
+]133;C\]666;vte.shell.preexec!\00000000  85 19 01 e0 31 00 00 00  1d d9 82 42 01 00 00 00  |....1......B....|
+00000010  00 00 00 00 02 00 00 00  8d 56 c3 6a 09 08 00 00  |.........V.j....|
+00000020  9b f4 82 36 15 da 69 f4  68 65 6c 6c 6f 2e 74 78  |...6..i.hello.tx|
+00000030  74 ff ff ff 85 19 02 e0  56 00 00 00 09 64 e7 62  |t.......V....d.b|
+00000040  02 00 00 00 01 00 00 00  b4 81 00 00 e8 03 e8 03  |................|
+00000050  12 00 00 00 8d 56 c3 6a  8d 56 c3 6a 8d 56 c3 6a  |.....V.j.V.j.V.j|
+00000060  00 00 00 00 12 00 00 00  12 00 00 00 00 00 00 00  |................|
+00000070  ee dd 4b b3 bd af 8e 25  48 65 6c 6c 6f 20 66 72  |..K....%Hello fr|
+00000080  6f 6d 20 4a 46 46 53 32  21 0a ff ff 85 19 01 e0  |om JFFS2!.......|
+00000090  30 00 00 00 78 be 3e fa  01 00 00 00 01 00 00 00  |0...x.>.........|
+000000a0  03 00 00 00 8d 56 c3 6a  08 08 00 00 00 4e f3 bb  |.....V.j.....N..|
+000000b0  a9 de 79 72 69 6e 66 6f  2e 74 78 74 85 19 02 e0  |..yrinfo.txt....|
+000000c0  58 00 00 00 3a 13 38 82  03 00 00 00 01 00 00 00  |X...:.8.........|
+000000d0  b4 81 00 00 e8 03 e8 03  14 00 00 00 8d 56 c3 6a  |.............V.j|
+000000e0  8d 56 c3 6a 8d 56 c3 6a  00 00 00 00 14 00 00 00  |.V.j.V.j........|
+000000f0  14 00 00 00 00 00 00 00  8a 74 43 dd 39 f8 22 78  |.........tC.9."x|
+00000100  45 6d 62 65 64 64 65 64  20 4c 69 6e 75 78 20 4c  |Embedded Linux L|
+00000110  61 62 32 0a 85 19 01 e0  2c 00 00 00 5f 56 f1 e0  |ab2.....,..._V..|
+00000120  01 00 00 00 02 00 00 00  04 00 00 00 8d 56 c3 6a  |.............V.j|
+00000130  04 04 00 00 a1 55 6f a5  40 19 cb d1 6c 6f 67 73  |.....Uo.@...logs|
+]666;vte.shell.postexec=0\]7;file://tung-pham/home/tung_pham/embedded_lab2\]0;tung_pham@tung-pham:~/embedded_lab2\]666;vte.shell.precmd!\]0;tung_pham@tung-pham: ~/embedded_lab2[01;32mtung_pham@tung-pham[00m:[01;34m~/embedded_lab2[00m$ sudo rmmod jffs2 mtdblock nandsim 2>/dev/null; cat /proc/mtd
+]133;C\]666;vte.shell.preexec!\dev:    size   erasesize  name
+mtd0: 02000000 00001000 "BIOS"
+]666;vte.shell.postexec=0\]7;file://tung-pham/home/tung_pham/embedded_lab2\]0;tung_pham@tung-pham:~/embedded_lab2\]666;vte.shell.precmd!\]0;tung_pham@tung-pham: ~/embedded_lab2[01;32mtung_pham@tung-pham[00m:[01;34m~/embedded_lab2[00m$ exit
+]133;C\]666;vte.shell.preexec!\exit
+
+Script done on 2026-10-05 14:52:41+07:00 [COMMAND_EXIT_CODE="0"]
