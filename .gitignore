@@ -27,3 +27,4 @@ modules.order
 # ===== Rac editor =====
 *~
 *.swp
+**/task1_ioctl/asgn1_app

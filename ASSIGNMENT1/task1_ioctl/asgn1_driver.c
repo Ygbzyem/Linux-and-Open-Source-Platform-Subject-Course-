@@ -8,6 +8,8 @@
 #include <linux/seq_file.h>
 #include <linux/slab.h>
 #include <linux/mutex.h>
+#include <linux/string.h>
+#include "asgn1_ioctl.h"
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Pham Minh Tung SE204386 ");
@@ -26,6 +28,8 @@ static int    open_count = 0;
 static int    write_count = 0;
 static int    read_count = 0;
 static int    last_write_size = 0;
+static int    mode = ASGN1_MODE_ECHO;   
+static const char asgn1_version[] = "asgn1_driver v1.0 - Pham Minh Tung SE204386";
 static struct class  *asgn1_class  = NULL;
 static struct device *asgn1_device = NULL;
 static DEFINE_MUTEX(asgn1_mutex);
@@ -109,12 +113,84 @@ out:
     return ret;
 }
 
+static long asgn1_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+{
+    void __user *uarg = (void __user *)arg;
+    struct asgn1_stats st;
+    char ver[ASGN1_VERSION_LEN];
+    int new_mode;
+
+    /* Lọc nhanh: lệnh không mang magic của mình thì từ chối ngay */
+    if (_IOC_TYPE(cmd) != ASGN1_MAGIC) {
+        pr_warn("asgn1_driver: ioctl wrong magic, cmd=%#x\n", cmd);
+        return -ENOTTY;
+    }
+
+    switch (cmd) {
+
+    case ASGN1_RESET_BUFFER:
+        mutex_lock(&asgn1_mutex);
+        memset(device_buffer, 0, BUFFER_SIZE);
+        buffer_len  = 0;
+        write_count = 0;
+        read_count  = 0;
+        mutex_unlock(&asgn1_mutex);
+        pr_info("asgn1_driver: ioctl RESET_BUFFER - buffer and counters cleared\n");
+        return 0;
+
+    case ASGN1_GET_STATS:
+        memset(&st, 0, sizeof(st));       /* không để lộ rác từ stack kernel */
+        mutex_lock(&asgn1_mutex);
+        st.open_count      = open_count;
+        st.write_count     = write_count;
+        st.read_count      = read_count;
+        st.buffer_len      = buffer_len;
+        st.last_write_size = last_write_size;
+        mutex_unlock(&asgn1_mutex);       /* mở khoá TRƯỚC khi copy ra user */
+        if (copy_to_user(uarg, &st, sizeof(st)))
+            return -EFAULT;
+        pr_info("asgn1_driver: ioctl GET_STATS - open=%d write=%d read=%d len=%d last=%d\n",
+                st.open_count, st.write_count, st.read_count,
+                st.buffer_len, st.last_write_size);
+        return 0;
+
+    case ASGN1_SET_MODE:
+        if (copy_from_user(&new_mode, uarg, sizeof(new_mode)))
+            return -EFAULT;
+        if (new_mode != ASGN1_MODE_KERNEL && new_mode != ASGN1_MODE_ECHO) {
+            pr_warn("asgn1_driver: ioctl SET_MODE - invalid mode %d\n", new_mode);
+            return -EINVAL;
+        }
+        mutex_lock(&asgn1_mutex);
+        mode = new_mode;
+        mutex_unlock(&asgn1_mutex);
+        pr_info("asgn1_driver: ioctl SET_MODE - mode=%d (%s)\n", new_mode,
+                new_mode == ASGN1_MODE_KERNEL ? "KERNEL" : "ECHO");
+        return 0;
+
+    case ASGN1_GET_VERSION:
+        memset(ver, 0, sizeof(ver));
+        /* strscpy: chép tối đa sizeof(ver)-1 ký tự và LUÔN đặt '\0' cuối */
+        strscpy(ver, asgn1_version, sizeof(ver));
+        if (copy_to_user(uarg, ver, sizeof(ver)))   /* đúng 64 byte, không hơn */
+            return -EFAULT;
+        pr_info("asgn1_driver: ioctl GET_VERSION - \"%s\"\n", ver);
+        return 0;
+
+    default:
+        pr_warn("asgn1_driver: ioctl unknown command %#x (nr=%u)\n",
+                cmd, _IOC_NR(cmd));
+        return -ENOTTY;
+    }
+}
+
 static struct file_operations asgn1_fops = {
     .owner   = THIS_MODULE,
     .open    = asgn1_open,
     .release = asgn1_release,
     .read    = asgn1_read,
     .write   = asgn1_write,
+    .unlocked_ioctl = asgn1_ioctl,
 };
 
 /* ================= PART B.1: procfs ================= */
