@@ -37,8 +37,8 @@ static DEFINE_MUTEX(asgn1_mutex);
 /* ================= PART A: file_operations ================= */
 
 static int asgn1_open(struct inode *inode, struct file *file) {
-	
-	int cnt;
+    
+    int cnt;
 
     mutex_lock(&asgn1_mutex);
     open_count++;
