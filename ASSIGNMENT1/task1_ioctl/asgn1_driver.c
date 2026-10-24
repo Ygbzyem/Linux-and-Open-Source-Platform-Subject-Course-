@@ -28,8 +28,9 @@ static int    open_count = 0;
 static int    write_count = 0;
 static int    read_count = 0;
 static int    last_write_size = 0;
-static int    mode = ASGN1_MODE_ECHO;   
+static int    mode = ASGN1_MODE_ECHO;
 static const char asgn1_version[] = "asgn1_driver v1.0 - Pham Minh Tung SE204386";
+static const char kernel_prefix[] = "[KERNEL] ";
 static struct class  *asgn1_class  = NULL;
 static struct device *asgn1_device = NULL;
 static DEFINE_MUTEX(asgn1_mutex);
@@ -37,7 +38,7 @@ static DEFINE_MUTEX(asgn1_mutex);
 /* ================= PART A: file_operations ================= */
 
 static int asgn1_open(struct inode *inode, struct file *file) {
-    
+
     int cnt;
 
     mutex_lock(&asgn1_mutex);
@@ -87,26 +88,34 @@ static ssize_t asgn1_write(struct file *file, const char __user *buf,
                            size_t len, loff_t *offset)
 {
     ssize_t ret;
-
-    if (len > BUFFER_SIZE - 1) {          /* chừa 1 byte cho '\0' */
-        pr_warn("asgn1_driver: write too large, truncating\n");
-        len = BUFFER_SIZE - 1;
-    }
+    size_t plen, room, copy_len;
 
     mutex_lock(&asgn1_mutex);
 
-    if (copy_from_user(device_buffer, buf, len)) {
+    /* Độ dài tiền tố phụ thuộc mode – đọc mode khi đang giữ khoá */
+    plen = (mode == ASGN1_MODE_KERNEL) ? strlen(kernel_prefix) : 0;
+    room = BUFFER_SIZE - 1 - plen;            /* chỗ còn lại cho dữ liệu user */
+    copy_len = min(len, room);
+    if (copy_len < len)
+        pr_warn("asgn1_driver: write %zu bytes truncated to %zu\n", len, copy_len);
+
+    /* Kernel → kernel: memcpy là đúng (cả hai đều là địa chỉ kernel) */
+    memcpy(device_buffer, kernel_prefix, plen);
+
+    /* User → kernel: BẮT BUỘC copy_from_user */
+    if (copy_from_user(device_buffer + plen, buf, copy_len)) {
         pr_err("asgn1_driver: copy_from_user failed\n");
         ret = -EFAULT;
-        goto out;                         /* lỗi: không đếm, không đổi len */
+        goto out;
     }
 
-    device_buffer[len] = '\0';            /* kết thúc theo độ dài MỚI */
-    buffer_len      = len;
+    buffer_len = plen + copy_len;
+    device_buffer[buffer_len] = '\0';
     write_count++;
-    last_write_size = len;
+    last_write_size = copy_len;               /* chỉ tính byte của user */
     ret = len;
-    pr_info("asgn1_driver: received %zu bytes (write #%d)\n", len, write_count);
+    pr_info("asgn1_driver: received %zu bytes, mode=%d, stored %d bytes (write #%d)\n",
+            len, mode, buffer_len, write_count);
 
 out:
     mutex_unlock(&asgn1_mutex);
