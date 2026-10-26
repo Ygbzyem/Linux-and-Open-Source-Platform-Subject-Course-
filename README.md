@@ -74,7 +74,7 @@
 | LAB-01 | Kernel, U-Boot, BusyBox, QEMU boot | ✅ Direct QEMU boot | [LAB1](LAB1/README.md) |
 | LAB-02 | Char driver, procfs/sysfs, MTD/JFFS2, auto-load | ✅ Parts A–D | [LAB2](LAB2/README.md) |
 | ASSIGNMENT-01 Task 1 | ioctl interface | ✅ 24/24 tests pass | [ASSIGNMENT1](ASSIGNMENT1/README.md) |
-| ASSIGNMENT-01 Task 2 | misc device `counter_driver` | ⏳ In progress | |
+| ASSIGNMENT-01 Task 2 | misc device `counter_driver` | ✅ 25/25 tests pass | [ASSIGNMENT1](ASSIGNMENT1/README.md) |
 | Driver exercises | Exam-style driver modifications | 📝 Planned | |
 | ASSIGNMENT-02 | Sensor Monitoring System | 📝 Planned | |
 

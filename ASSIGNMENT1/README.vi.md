@@ -5,7 +5,7 @@
 | Task | Nội dung | Điểm | Trạng thái |
 |---|---|---|---|
 | 1 | Mở rộng driver LAB-02 với **ioctl** (4 lệnh) | 40 | ✅ 24/24 test PASS |
-| 2 | **Misc device** `counter_driver` viết mới | 30 | ⏳ Đang làm |
+| 2 | **Misc device** `counter_driver` viết mới | 30 | ✅ 25/25 test PASS |
 | 3 | Báo cáo phân tích thiết kế | 20 | – |
 | 4 | 4 câu hỏi lý thuyết | 10 | ✅ Xem [docs/07](../docs/vi/07-van-dap.md) mục C1, E1, F, G1 |
 
@@ -21,9 +21,13 @@ ASSIGNMENT1/
 │   ├── asgn1_app.c        ← chương trình userspace gọi ioctl
 │   ├── test_asgn1.sh      ← test tự động, in PASS/FAIL
 │   └── Makefile           ← build cả module (.ko) và app (ARM, static)
-├── task2_misc/            ← (đang làm)
+├── task2_misc/
+│   ├── counter_driver.c   ← misc device /dev/counter + /proc/counter_info
+│   ├── test_counter.sh    ← test tự động, in PASS/FAIL
+│   └── Makefile
 └── logs/
-    └── test_asgn1_output.txt
+    ├── test_asgn1_output.txt
+    └── test_counter_output.txt
 ```
 
 ---
@@ -171,10 +175,66 @@ Data length     : 1023 bytes
 
 # Task 2 – Misc device `counter_driver`
 
-> ⏳ Đang làm. Yêu cầu chính:
-> - `struct miscdevice` + `misc_register()` / `misc_deregister()` → `/dev/counter`, major 10
-> - Bộ đếm `atomic_t`; `read` trả giá trị dạng chuỗi + `\n` rồi tự tăng 1, xử lý `*ppos`
-> - `write` dùng `kstrtoint()`; số âm / không phải số → `-EINVAL`
-> - `/proc/counter_info`: giá trị hiện tại, tổng số lần đọc, tổng số lần ghi
+## 🏗️ Thiết kế
 
-API: [docs/05 – Misc device](../docs/vi/05-kernel-api.md#4-misc-device).
+```text
+ cat /dev/counter ──► counter_read  ── *ppos == 0 ? ──► val = atomic_fetch_inc(&counter)
+                                                       chụp "val\n" vào private_data
+                                     └─ trả bản chụp từ *ppos, hết thì trả 0 (EOF)
+ echo N > /dev/counter ──► counter_write ──► kstrtoint ──► N < 0 hoặc không phải số → -EINVAL
+                                                         ngược lại atomic_set(&counter, N)
+ cat /proc/counter_info ──► giá trị hiện tại, tổng số lần đọc, tổng số lần ghi
+```
+
+| Thuộc tính | Giá trị |
+|---|---|
+| Module | `counter_driver.ko` |
+| Đăng ký | `misc_register()` / `misc_deregister()` |
+| Device | `/dev/counter`, major **10**, minor do kernel cấp, quyền 0666 |
+| Trạng thái | `atomic_t counter, total_reads, total_writes` – không cần mutex |
+| procfs | `/proc/counter_info` |
+
+| Quyết định | Lý do |
+|---|---|
+| Dùng misc device thay vì `register_chrdev` | Mọi misc device dùng chung major 10; kernel tự cấp minor và tạo `/dev/counter`. Không cần class/device |
+| `atomic_fetch_inc` (lấy **và** tăng trong một bước) | Tách `atomic_read` + `atomic_inc` thì hai tiến trình đọc cùng lúc có thể nhận cùng một giá trị |
+| Bản chụp riêng cho từng lần mở trong `file->private_data` (cấp ở `open`, giải phóng ở `release`) | `cat` gọi `read` hai lần: lần 2 phải trả EOF và không tăng thêm; `dd bs=1` phải thấy một chuỗi nhất quán |
+| Buffer kernel 16 byte có kiểm tra độ dài cho `write` | Dữ liệu user không bao giờ tràn bộ nhớ kernel; dài hơn → `-EINVAL` |
+| Lần ghi bị từ chối không tính vào `total_writes` | Chỉ lần cập nhật thành công mới đổi thống kê |
+| `init` gỡ misc device nếu `proc_create` lỗi | Huỷ các bước đã xong khi lỗi; `exit` làm theo thứ tự ngược |
+
+## ⚡ Build và chạy
+
+```bash
+cd ASSIGNMENT1/task2_misc
+../../tools/dev.sh
+```
+
+```sh
+test_counter.sh
+```
+
+## ✅ Kết quả test
+
+```text
+[1] Nạp module (misc major 10, /proc/misc) ...... 5 PASS
+[2] Đọc tự tăng 0 → 1 → 2 ....................... 3 PASS
+[3] Thống kê trước khi ghi ...................... 2 PASS
+[4] Ghi 100 → đọc 100, 101 ...................... 3 PASS
+[5] Reset (ghi 0) ............................... 2 PASS
+[6] Dữ liệu sai 'abc', '-5' → -EINVAL ........... 3 PASS
+[7] dd bs=1: đủ giá trị, chỉ tăng một lần ....... 2 PASS
+[8] Thống kê cuối (9 lần đọc, 2 lần ghi) ........ 2 PASS
+[9] Gỡ module ................................... 3 PASS
+ RESULT: 25 passed, 0 failed
+```
+
+`/proc/counter_info` ở 3 thời điểm đề yêu cầu (trích log):
+
+```text
+trước khi ghi   Current value : 3    Total reads : 3   Total writes : 0
+sau khi ghi     Current value : 102  Total reads : 5   Total writes : 1
+sau khi reset   Current value : 1    Total reads : 6   Total writes : 2
+```
+
+Log đầy đủ: [`logs/test_counter_output.txt`](logs/test_counter_output.txt)

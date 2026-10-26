@@ -5,7 +5,7 @@
 | Task | Content | Points | Status |
 |---|---|---|---|
 | 1 | Extend the LAB-02 driver with **ioctl** (4 commands) | 40 | ✅ 24/24 tests pass |
-| 2 | New **misc device** `counter_driver` | 30 | ⏳ In progress |
+| 2 | New **misc device** `counter_driver` | 30 | ✅ 25/25 tests pass |
 | 3 | Design analysis report | 20 | – |
 | 4 | Four theory questions | 10 | ✅ See [docs/07](../docs/07-viva-qa.md) C1, E1, F, G1 |
 
@@ -21,9 +21,13 @@ ASSIGNMENT1/
 │   ├── asgn1_app.c        ← user-space tool issuing ioctl calls
 │   ├── test_asgn1.sh      ← automated test, prints PASS/FAIL
 │   └── Makefile           ← builds both the module (.ko) and the app (ARM, static)
-├── task2_misc/            ← (in progress)
+├── task2_misc/
+│   ├── counter_driver.c   ← misc device /dev/counter + /proc/counter_info
+│   ├── test_counter.sh    ← automated test, prints PASS/FAIL
+│   └── Makefile
 └── logs/
-    └── test_asgn1_output.txt
+    ├── test_asgn1_output.txt
+    └── test_counter_output.txt
 ```
 
 ---
@@ -173,10 +177,66 @@ Fix: terminate at the new length.
 
 # Task 2 – Misc device `counter_driver`
 
-> ⏳ In progress. Main requirements:
-> - `struct miscdevice` + `misc_register()` / `misc_deregister()` → `/dev/counter`, major 10
-> - `atomic_t` counter; `read` returns the value as a string + `\n` then increments it, handling `*ppos`
-> - `write` uses `kstrtoint()`; negative / non-numeric input → `-EINVAL`
-> - `/proc/counter_info`: current value, total reads, total writes
+## 🏗️ Design
 
-API: [docs/05 – Misc device](../docs/05-kernel-api.md#4-misc-device).
+```text
+ cat /dev/counter ──► counter_read  ── *ppos == 0 ? ──► val = atomic_fetch_inc(&counter)
+                                                       snapshot "val\n" in private_data
+                                     └─ serve the snapshot from *ppos, 0 at its end (EOF)
+ echo N > /dev/counter ──► counter_write ──► kstrtoint ──► N < 0 or not a number → -EINVAL
+                                                         else atomic_set(&counter, N)
+ cat /proc/counter_info ──► current value, total reads, total writes
+```
+
+| Property | Value |
+|---|---|
+| Module | `counter_driver.ko` |
+| Registration | `misc_register()` / `misc_deregister()` |
+| Device | `/dev/counter`, major **10**, dynamic minor, mode 0666 |
+| State | `atomic_t counter, total_reads, total_writes` – no mutex needed |
+| procfs | `/proc/counter_info` |
+
+| Decision | Reason |
+|---|---|
+| Misc device instead of `register_chrdev` | Major 10 is shared by all misc devices; the kernel assigns the minor and creates `/dev/counter`. No class/device boilerplate |
+| `atomic_fetch_inc` (get **and** increment in one step) | Separate `atomic_read` + `atomic_inc` would let two concurrent readers get the same value |
+| Per-open snapshot in `file->private_data` (allocated in `open`, freed in `release`) | `cat` calls `read` twice: the second call must return EOF without incrementing again; `dd bs=1` must see one consistent string |
+| Bounded 16-byte kernel buffer for `write` | User input never overflows kernel memory; longer input → `-EINVAL` |
+| Rejected writes are not counted in `total_writes` | Only successful updates change the statistics |
+| `init` deregisters the misc device if `proc_create` fails | Undo completed steps on error; `exit` runs in reverse order |
+
+## ⚡ Build and run
+
+```bash
+cd ASSIGNMENT1/task2_misc
+../../tools/dev.sh
+```
+
+```sh
+test_counter.sh
+```
+
+## ✅ Test results
+
+```text
+[1] Load module (misc major 10, /proc/misc) ... 5 PASS
+[2] Read auto-increment 0 → 1 → 2 .............. 3 PASS
+[3] Statistics before write ..................... 2 PASS
+[4] Write 100 → reads 100, 101 .................. 3 PASS
+[5] Reset (write 0) ............................. 2 PASS
+[6] Invalid input 'abc', '-5' → -EINVAL ......... 3 PASS
+[7] dd bs=1: whole value, single increment ...... 2 PASS
+[8] Final statistics (9 reads, 2 writes) ........ 2 PASS
+[9] Unload module ............................... 3 PASS
+ RESULT: 25 passed, 0 failed
+```
+
+`/proc/counter_info` at the three required moments (from the log):
+
+```text
+before write   Current value : 3    Total reads : 3   Total writes : 0
+after write    Current value : 102  Total reads : 5   Total writes : 1
+after reset    Current value : 1    Total reads : 6   Total writes : 2
+```
+
+Full log: [`logs/test_counter_output.txt`](logs/test_counter_output.txt)
