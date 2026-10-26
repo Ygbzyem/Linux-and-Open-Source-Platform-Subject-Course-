@@ -66,13 +66,52 @@ make clean >/dev/null 2>&1; ls
 > **automatically `insmod`** the new build at boot, and `test_driver.sh` keeps working.
 > If you rename it or change the major → you must `insmod`/`mknod` yourself.
 
-If the task requires renaming the driver:
+> 💡 Work in `~/exam/`, **outside the repo** – no risk of committing the exam, and the repo
+> stays clean for looking things up.
+
+### 2.1. When the task requires specific names
+
+Each "name" of a driver shows up in a different place:
+
+| Task asks for a name for… | Change | Visible in |
+|---|---|---|
+| **Module** (e.g. `SE204386_drv`) | The **file name** `.c` **and** the `obj-m` line of the Makefile | `lsmod`, `insmod X.ko`, `rmmod X` |
+| **Device** (e.g. `/dev/mydev`) | `#define DEVICE_NAME "mydev"` | `/dev/mydev`, `/proc/devices` |
+| **Class / sysfs** | `#define CLASS_NAME "mydev_class"` | `/sys/class/mydev_class/` |
+| **proc file** | String in `proc_create("mydev_info", …)` | `/proc/mydev_info` |
+| **Major** | `#define DRIVER_MAJOR 241` | `ls -l /dev/mydev` |
+| Author | `MODULE_AUTHOR(...)` | `modinfo` |
+| Functions, variables, log prefixes (`lab2_…`) | Optional, but keep it consistent | dmesg |
+
+**The module name comes from the file name**, not from anything inside the code:
+`abc.c` → `abc.ko` → module `abc`.
+
+> ⚠️ **Trap:** at boot `rcS` always loads `lab2_driver.ko`, which takes **major 240**. A renamed
+> driver that still uses 240 fails with `insmod: … Device or resource busy`.
+> Fix: change the major to 241–254 (preferred), or `rmmod lab2_driver` first.
+> A renamed driver is **not** auto-loaded by `rcS` – you must `insmod` it yourself.
+
+Rename recipe (example name `mydev`):
 
 ```bash
-mv lab2_driver.c mydrv.c
-sed -i 's/lab2_driver\.o/mydrv.o/' Makefile
-sed -i 's/lab2_/mydrv_/g; s/"lab2"/"mydrv"/' mydrv.c
-grep -n 'lab2\|240' mydrv.c          # fix the remaining spots by hand (major…)
+cd ~/exam/task1
+mv lab2_driver.c mydev.c
+sed -i 's/lab2_driver\.o/mydev.o/' Makefile
+sed -i 's/lab2_/mydev_/g; s/"lab2"/"mydev"/; s/DRIVER_MAJOR 240/DRIVER_MAJOR 241/' mydev.c
+grep -n 'lab2\|LAB-02\|240' mydev.c Makefile     # must print nothing – fix leftovers by hand
+```
+
+The second `sed` also turns `"lab2_class"` → `"mydev_class"` and `"lab2_info"` → `"mydev_info"`.
+
+Test after renaming (inside QEMU):
+
+```sh
+insmod /lib/modules/5.15.221/mydev.ko
+lsmod
+ls -l /dev/mydev
+cat /proc/mydev_info
+ls /sys/class/mydev_class/mydev/
+rmmod mydev
 ```
 
 ---
@@ -202,6 +241,15 @@ script -q -c "$HOME/embedded_lab2/dev.sh" ~/exam/task1/log_task1.txt
 ```
 
 Run the tests in QEMU, then Ctrl+A X → the log is saved.
+
+Typical submission (check what the task asks for):
+
+```bash
+cd ~/exam
+make -C task1 >/dev/null                 # make sure the .ko exists
+tar czf SE204386_task1.tar.gz task1/*.c task1/Makefile task1/*.ko task1/log_task1.txt
+tar tzf SE204386_task1.tar.gz
+```
 
 ---
 

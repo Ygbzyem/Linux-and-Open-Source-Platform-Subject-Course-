@@ -65,13 +65,51 @@ make clean >/dev/null 2>&1; ls
 > lúc boot, và `test_driver.sh` vẫn chạy được. Nếu đổi tên/major → phải tự `insmod` và
 > `mknod` theo major mới.
 
-Nếu đề yêu cầu đổi tên driver:
+> 💡 Làm bài trong `~/exam/`, **ngoài repo** – không lo lỡ commit bài thi, và repo vẫn sạch
+> để mở ra tra cứu.
+
+### 2.1. Khi đề yêu cầu đặt tên riêng
+
+Mỗi "cái tên" của driver hiện ra ở một chỗ khác nhau:
+
+| Đề yêu cầu tên… | Sửa ở đâu | Nhìn thấy ở đâu |
+|---|---|---|
+| **Module** (vd `SE204386_drv`) | **Tên file** `.c` **và** dòng `obj-m` trong Makefile | `lsmod`, `insmod X.ko`, `rmmod X` |
+| **Device** (vd `/dev/mydev`) | `#define DEVICE_NAME "mydev"` | `/dev/mydev`, `/proc/devices` |
+| **Class / sysfs** | `#define CLASS_NAME "mydev_class"` | `/sys/class/mydev_class/` |
+| **File proc** | Chuỗi trong `proc_create("mydev_info", …)` | `/proc/mydev_info` |
+| **Major** | `#define DRIVER_MAJOR 241` | `ls -l /dev/mydev` |
+| Tác giả | `MODULE_AUTHOR(...)` | `modinfo` |
+| Tên hàm, biến, log (`lab2_…`) | Không bắt buộc, nên đổi cho đồng bộ | dmesg |
+
+**Tên module lấy theo tên file**, không phải chữ nào trong code: `abc.c` → `abc.ko` → module `abc`.
+
+> ⚠️ **Bẫy:** khi boot, `rcS` luôn nạp `lab2_driver.ko`, driver này chiếm **major 240**. Driver
+> đã đổi tên mà vẫn dùng 240 sẽ báo `insmod: … Device or resource busy`.
+> Cách xử lý: đổi major sang 241–254 (nên làm), hoặc `rmmod lab2_driver` trước.
+> Driver đã đổi tên **không** được `rcS` tự nạp – phải tự `insmod`.
+
+Công thức đổi tên (ví dụ tên `mydev`):
 
 ```bash
-mv lab2_driver.c mydrv.c
-sed -i 's/lab2_driver\.o/mydrv.o/' Makefile
-sed -i 's/lab2_/mydrv_/g; s/"lab2"/"mydrv"/' mydrv.c
-grep -n 'lab2\|240' mydrv.c          # sửa tay những chỗ còn lại (major…)
+cd ~/exam/bai1
+mv lab2_driver.c mydev.c
+sed -i 's/lab2_driver\.o/mydev.o/' Makefile
+sed -i 's/lab2_/mydev_/g; s/"lab2"/"mydev"/; s/DRIVER_MAJOR 240/DRIVER_MAJOR 241/' mydev.c
+grep -n 'lab2\|LAB-02\|240' mydev.c Makefile     # phải trống – còn sót thì sửa tay
+```
+
+Lệnh `sed` thứ hai đổi luôn `"lab2_class"` → `"mydev_class"` và `"lab2_info"` → `"mydev_info"`.
+
+Test sau khi đổi tên (trong QEMU):
+
+```sh
+insmod /lib/modules/5.15.221/mydev.ko
+lsmod
+ls -l /dev/mydev
+cat /proc/mydev_info
+ls /sys/class/mydev_class/mydev/
+rmmod mydev
 ```
 
 ---
@@ -201,6 +239,15 @@ script -q -c "$HOME/embedded_lab2/dev.sh" ~/exam/bai1/log_bai1.txt
 ```
 
 Chạy test trong QEMU, rồi Ctrl+A X → log đã được lưu.
+
+Gói nộp thường gặp (đọc kỹ đề yêu cầu những gì):
+
+```bash
+cd ~/exam
+make -C bai1 >/dev/null                  # chắc chắn có file .ko
+tar czf SE204386_bai1.tar.gz bai1/*.c bai1/Makefile bai1/*.ko bai1/log_bai1.txt
+tar tzf SE204386_bai1.tar.gz
+```
 
 ---
 
