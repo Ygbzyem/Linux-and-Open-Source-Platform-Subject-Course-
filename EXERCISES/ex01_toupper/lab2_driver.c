@@ -12,7 +12,7 @@
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Pham Minh Tung");
-MODULE_DESCRIPTION("LAB-02: Simple Character Device Driver");
+MODULE_DESCRIPTION("LAB-02: Uppercase Character Device Driver");
 MODULE_VERSION("1.0");
 
 #define DEVICE_NAME  "lab2"
