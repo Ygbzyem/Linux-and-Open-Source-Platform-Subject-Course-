@@ -6,7 +6,7 @@ Exam-style tasks: modify the LAB-02 character driver to do something new, build 
 QEMU and explain it. Every exercise starts from a fresh copy of [`base/`](base/) and keeps the
 module name `lab2_driver`, so `rcS` loads it automatically at boot.
 
-> 📘 Full exercise handbook (20 + 8 exercises, headers ↔ functions, patterns) – Vietnamese: [`HANDBOOK.vi.md`](HANDBOOK.vi.md)
+> 📘 Full exercise handbook (20 + 8 exercises, headers ↔ functions, patterns): [`HANDBOOK.md`](HANDBOOK.md)
 
 ## Workflow for each exercise
 

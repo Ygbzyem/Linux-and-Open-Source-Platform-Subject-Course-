@@ -1,6 +1,6 @@
 # Sổ tay bài tập driver LAB-02
 
-[← Danh sách bài](README.vi.md) · [← Về trang chủ](../README.vi.md)
+[English](HANDBOOK.md) | **Tiếng Việt** · [← Danh sách bài](README.vi.md) · [← Về trang chủ](../README.vi.md)
 
 20 bài luyện + 8 bài bổ sung dựa trên driver LAB-02. Mỗi bài ghi rõ: **đề, sửa ở vùng nào, header nào, hàm nào, code chính, lệnh test, lỗi hay gặp**.
 
