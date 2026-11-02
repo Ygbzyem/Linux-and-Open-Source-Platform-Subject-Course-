@@ -59,6 +59,10 @@
   Bài luyện driver  (sửa driver LAB-02 theo yêu cầu – dạng đề thi)
              │
              ▼
+  LAB-03  Debug & hiệu năng
+          GDB từ xa → Valgrind → strace/perf → cyclictest
+             │
+             ▼
   ASSIGNMENT-02  Sensor Monitoring System (capstone)
           kernel driver + app đa luồng + IPC + debug + real-time
 ```
@@ -73,8 +77,9 @@
 | LAB-02 | Char driver, procfs/sysfs, MTD/JFFS2, auto-load | ✅ Phần A–D | [LAB2](LAB2/README.vi.md) |
 | ASSIGNMENT-01 Task 1 | ioctl interface | ✅ 24/24 test PASS | [ASSIGNMENT1](ASSIGNMENT1/README.vi.md) |
 | ASSIGNMENT-01 Task 2 | misc device `counter_driver` | ✅ 25/25 test PASS | [ASSIGNMENT1](ASSIGNMENT1/README.vi.md) |
-| Bài luyện driver | Sửa driver theo đề | 📝 Kế hoạch | |
-| ASSIGNMENT-02 | Sensor Monitoring System | 📝 Kế hoạch | |
+| Bài luyện driver | Sửa driver theo đề | ✅ 01–05 + sổ tay | [EXERCISES](EXERCISES/README.vi.md) |
+| LAB-03 | GDB từ xa, Valgrind, strace/perf, cyclictest | ✅ Phần A–D | [LAB3](LAB3/README.vi.md) · [kết quả](LAB3/RESULTS.md) |
+| ASSIGNMENT-02 | Sensor Monitoring System | 🚧 Đang làm | |
 
 ---
 
@@ -99,11 +104,17 @@
 │       ├── driver/          ← lab2_driver.c, Makefile, script test
 │       ├── rootfs_custom/
 │       └── logs/
-└── ASSIGNMENT1/
-    ├── README.md
-    ├── task1_ioctl/         ← asgn1_driver.c, asgn1_ioctl.h, asgn1_app.c, test
-    ├── task2_misc/
-    └── logs/
+├── ASSIGNMENT1/
+│   ├── README.md
+│   ├── task1_ioctl/         ← asgn1_driver.c, asgn1_ioctl.h, asgn1_app.c, test
+│   ├── task2_misc/
+│   └── logs/
+├── EXERCISES/               ← bài luyện driver + HANDBOOK.vi.md
+└── LAB3/
+    ├── README.md, RESULTS.md
+    ├── apps/                ← buggy_app.c, leaky_app.c, perf_target.c
+    ├── scripts/             ← 0_setup … 8_package
+    └── logs/                ← GDB, Valgrind, strace, perf, cyclictest
 ```
 
 **Những thứ cố ý KHÔNG có trong repo** (quá nặng hoặc build lại được): source kernel, source

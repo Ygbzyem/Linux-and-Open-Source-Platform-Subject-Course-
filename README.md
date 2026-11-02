@@ -61,6 +61,10 @@
   Driver exercises  (modify the LAB-02 driver on demand – exam style)
              │
              ▼
+  LAB-03  Debugging & performance
+          remote GDB → Valgrind → strace/perf → cyclictest
+             │
+             ▼
   ASSIGNMENT-02  Sensor Monitoring System (capstone)
           kernel driver + multi-threaded app + IPC + debugging + real-time
 ```
@@ -75,8 +79,9 @@
 | LAB-02 | Char driver, procfs/sysfs, MTD/JFFS2, auto-load | ✅ Parts A–D | [LAB2](LAB2/README.md) |
 | ASSIGNMENT-01 Task 1 | ioctl interface | ✅ 24/24 tests pass | [ASSIGNMENT1](ASSIGNMENT1/README.md) |
 | ASSIGNMENT-01 Task 2 | misc device `counter_driver` | ✅ 25/25 tests pass | [ASSIGNMENT1](ASSIGNMENT1/README.md) |
-| Driver exercises | Exam-style driver modifications | 📝 Planned | |
-| ASSIGNMENT-02 | Sensor Monitoring System | 📝 Planned | |
+| Driver exercises | Exam-style driver modifications | ✅ 01–05 + handbook | [EXERCISES](EXERCISES/README.md) |
+| LAB-03 | Remote GDB, Valgrind, strace/perf, cyclictest | ✅ Parts A–D | [LAB3](LAB3/README.md) · [results](LAB3/RESULTS.md) |
+| ASSIGNMENT-02 | Sensor Monitoring System | 🚧 In progress | |
 
 ---
 
@@ -101,11 +106,17 @@
 │       ├── driver/          ← lab2_driver.c, Makefile, test scripts
 │       ├── rootfs_custom/
 │       └── logs/
-└── ASSIGNMENT1/
-    ├── README.md
-    ├── task1_ioctl/         ← asgn1_driver.c, asgn1_ioctl.h, asgn1_app.c, test
-    ├── task2_misc/
-    └── logs/
+├── ASSIGNMENT1/
+│   ├── README.md
+│   ├── task1_ioctl/         ← asgn1_driver.c, asgn1_ioctl.h, asgn1_app.c, test
+│   ├── task2_misc/
+│   └── logs/
+├── EXERCISES/               ← exam-style driver exercises + HANDBOOK.md
+└── LAB3/
+    ├── README.md, RESULTS.md
+    ├── apps/                ← buggy_app.c, leaky_app.c, perf_target.c
+    ├── scripts/             ← 0_setup … 8_package
+    └── logs/                ← GDB, Valgrind, strace, perf, cyclictest
 ```
 
 **Intentionally NOT in the repo** (too large or reproducible): kernel, U-Boot and BusyBox
