@@ -1,0 +1,9 @@
+== Phien ban cong cu ==
+Linux tung-pham 7.0.0-38-generic #38-Ubuntu SMP PREEMPT_DYNAMIC Fri Sep  4 09:10:14 UTC 2026 x86_64 GNU/Linux
+GNU gdb (Ubuntu 17.1-2ubuntu1) 17.1
+valgrind-3.26.0
+strace -- version 6.19
+perf version 7.0.14
+cyclictest V 2.80
+arm-linux-gnueabihf-gcc (Ubuntu 15.2.0-16ubuntu1) 15.2.0
+QEMU emulator version 10.2.1 (Debian 1:10.2.1+ds-1ubuntu3.2)

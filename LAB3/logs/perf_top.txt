@@ -1,0 +1,15 @@
+    56.78%  [.] __ieee754_log_fma                  libm.so.6             -      -            
+    20.74%  [.] heavy_compute                      perf_target           -      -            
+    12.57%  [.] log@@GLIBC_2.29                    libm.so.6             -      -            
+     3.78%  [.] log@plt                            perf_target           -      -            
+     1.30%  [k] _raw_spin_lock                     [kernel.kallsyms]     -      -            
+               0x300000002
+     1.26%  [k] qi_submit_sync                     [kernel.kallsyms]     -      -            
+               0x40c45c8000000000
+     1.26%  [k] kmem_cache_alloc_noprof            [kernel.kallsyms]     -      -            
+     0.76%  [k] lock_vma_under_rcu                 [kernel.kallsyms]     -      -            
+               0x300000002
+     0.52%  [k] flush_tlb_mm_range                 [kernel.kallsyms]     -      -            
+     0.42%  [k] build_id_parse_nofault             [kernel.kallsyms]     -      -            
+     0.30%  [.] get_common_cache_info.constprop.0  ld-linux-x86-64.so.2  -      -            
+     0.17%  [k] copy_mc_enhanced_fast_string       [kernel.kallsyms]     -      -            
