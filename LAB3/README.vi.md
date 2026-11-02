@@ -38,3 +38,7 @@ Trong QEMU: `net_up.sh; gdbserver :1234 /usr/bin/buggy_app` cho Phần A, `lab3_
 | Không cấu hình mạng trong guest | `net_up.sh` (10.0.2.15) | `hostfwd` cần card mạng guest có IP |
 | Đường dẫn `'~/…'` trong gnuplot | Đường dẫn đầy đủ | gnuplot không hiểu `~` |
 | `leaky_app` chạy xong trong vài ms | Tuỳ chọn `PAUSE_FOR_PROC` thêm sleep | Kịp đọc `/proc/PID/status` trước và sau khi leak |
+
+## Kết quả
+
+Số liệu đo được của từng phần: [`RESULTS.md`](RESULTS.md).

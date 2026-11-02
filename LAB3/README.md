@@ -38,3 +38,7 @@ Inside QEMU: `net_up.sh; gdbserver :1234 /usr/bin/buggy_app` for Part A, `lab3_t
 | No network setup in the guest | `net_up.sh` (10.0.2.15) | `hostfwd` needs the guest NIC configured |
 | `'~/…'` paths in gnuplot | Absolute paths | gnuplot does not expand `~` |
 | `leaky_app` exits in milliseconds | Optional `PAUSE_FOR_PROC` sleeps | Lets `/proc/PID/status` be read before and after the leak |
+
+## Results
+
+Measured numbers for every part: [`RESULTS.md`](RESULTS.md).
