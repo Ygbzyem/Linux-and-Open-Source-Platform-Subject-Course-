@@ -1,0 +1,5 @@
+# Min Latencies: 00002 00002 00002 00002
+# Avg Latencies: 00002 00003 00002 00002
+# Max Latencies: 00012 00014 00010 00012
+# Histogram Overflows: 00000 00000 00000 00000
+Thread0: 100.0% mau < 50us

@@ -1,0 +1,2 @@
+   text	   data	    bss	    dec	    hex	filename
+ 327256	  12032	  10832	 350120	  557a8	buggy_app

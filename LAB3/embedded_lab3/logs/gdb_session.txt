@@ -1,0 +1,6 @@
++set architecture arm
+The target architecture is set to "arm".
++file /home/tung_pham/embedded_lab3/apps/buggy_app
++target remote localhost:1234
+/tmp/lab3_session.gdb:10: Error in sourced command file:
+Remote communication error.  Target disconnected: error while reading: Connection reset by peer.
