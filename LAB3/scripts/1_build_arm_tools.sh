@@ -4,7 +4,7 @@
 set -e
 T=$HOME/embedded_lab3/tools
 GDBV=15.2
-STV=6.11
+STV=7.3
 J=$(nproc)
 mkdir -p "$T" && cd "$T"
 trap 'echo "!! LOI - xem log trong $T (*_configure.log, *_build.log) va gui cho minh 30 dong cuoi"' ERR
@@ -25,7 +25,7 @@ cd "$T"
 echo "== strace $STV =="
 [ -f strace-$STV.tar.xz ] || wget -q --show-progress https://github.com/strace/strace/releases/download/v$STV/strace-$STV.tar.xz
 rm -rf strace-$STV && tar xf strace-$STV.tar.xz && cd strace-$STV
-./configure --host=arm-linux-gnueabihf --enable-mpers=no --enable-bundled=yes LDFLAGS="-static" \
+./configure --host=arm-linux-gnueabihf --enable-mpers=no LDFLAGS="-static" \
     > ../strace_configure.log 2>&1
 make -j"$J" > ../strace_build.log 2>&1
 arm-linux-gnueabihf-strip -o "$T/strace" src/strace
